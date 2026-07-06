@@ -1,0 +1,111 @@
+import { GroundTruth } from './schemas';
+
+/**
+ * قضية احتياطية واحدة مكتوبة يدويًا ومُراجَعة مسبقًا (متوافقة مع كل سياسات المحتوى
+ * ومطابقة لمخطط Zod)، تُستخدم فقط عندما تفشل كل محاولات توليد Claude
+ * (انقطاع خدمة OpenAI، أو فشل متكرر في التحقق/الاتساق).
+ *
+ * الهدف: ألا تتوقف اللعبة بالكامل بسبب مشكلة مؤقتة في مزوّد الذكاء الاصطناعي.
+ * هذا حل احتياطي واحد بسيط؛ يمكن لاحقًا توسيعه لعدة قضايا احتياطية يُختار بينها عشوائيًا
+ * لتقليل تكرار نفس القضية الاحتياطية على مستخدمين مختلفين.
+ */
+export const FALLBACK_CASE: GroundTruth = {
+  title: 'سرقة الصندوق الحديدي في مستودع الميناء',
+  crime_type: 'سرقة موصوفة',
+  setting: 'مستودع شحن تابع لشركة نقل بحري في منطقة الميناء',
+  victim: {
+    name: 'شركة الأمين للشحن والتخزين',
+    background: 'شركة لوجستية متوسطة الحجم تدير مستودعات تخزين البضائع القيّمة قبل شحنها.',
+  },
+  timeline: [
+    { time: '22:00', event: 'إغلاق المستودع رسميًا وخروج معظم الموظفين.' },
+    { time: '23:15', event: 'آخر تسجيل لدخول بطاقة عبور إلى المستودع قبل الحادثة.' },
+    { time: '01:40', event: 'كاميرا خارجية تسجل انقطاعًا مفاجئًا لمدة 6 دقائق.' },
+    { time: '06:00', event: 'مسؤول المستودع يكتشف الصندوق الحديدي مفقودًا عند الفتح الصباحي.' },
+  ],
+  characters: [
+    {
+      role_type: 'judge',
+      role_name: 'قاضي التحقيق',
+      name: 'القاضي وائل حمدان',
+      priority_order: 1,
+      relationships: ['يدير جلسة التحقيق دون علاقة مسبقة بأي طرف'],
+      knows_facts: ['التقرير الأولي للشرطة عن وقت الحادثة'],
+      physical_evidence_held: [],
+      motive_category: null,
+      is_real_culprit: false,
+      is_defendant: false,
+    },
+    {
+      role_type: 'prosecutor',
+      role_name: 'ممثل الادعاء',
+      name: 'المحامية ريم صبري',
+      priority_order: 2,
+      relationships: ['تمثل شركة الأمين للشحن والتخزين'],
+      knows_facts: ['سجلات بطاقات الدخول الرسمية', 'تقرير الجرد المالي للصندوق المسروق'],
+      physical_evidence_held: ['نسخة سجل بطاقات الدخول'],
+      motive_category: 'professional',
+      is_real_culprit: false,
+      is_defendant: false,
+    },
+    {
+      role_type: 'defense',
+      role_name: 'محامي الدفاع',
+      name: 'المحامي عادل فوزي',
+      priority_order: 3,
+      relationships: ['يمثل المتهم بشير كرم'],
+      knows_facts: ['شهادة المتهم بأنه غادر المستودع قبل منتصف الليل'],
+      physical_evidence_held: [],
+      motive_category: 'professional',
+      is_real_culprit: false,
+      is_defendant: false,
+    },
+    {
+      role_type: 'defendant',
+      role_name: 'مشرف المناوبة الليلية',
+      name: 'بشير كرم',
+      priority_order: 4,
+      relationships: ['كان مسؤولاً عن إغلاق المستودع تلك الليلة', 'يعمل تحت إشراف مسؤول المستودع'],
+      knows_facts: ['كود تعطيل الكاميرا الخارجية المؤقت المستخدم في الصيانة'],
+      physical_evidence_held: ['جدول مناوبته الموقّع لتلك الليلة'],
+      motive_category: 'financial',
+      is_real_culprit: false,
+      is_defendant: true,
+    },
+    {
+      role_type: 'witness_main',
+      role_name: 'حارس أمن المدخل',
+      name: 'الحارس منير قاسم',
+      priority_order: 5,
+      relationships: ['يعمل في نفس المناوبة الليلية', 'رأى شخصًا يغادر عبر المدخل الجانبي'],
+      knows_facts: ['شاهد شخصًا يحمل حقيبة كبيرة عند الساعة 01:35 تقريبًا'],
+      physical_evidence_held: ['سجل الحراسة اليدوي لتلك الليلة'],
+      motive_category: null,
+      is_real_culprit: false,
+      is_defendant: false,
+    },
+    {
+      role_type: 'secondary',
+      role_name: 'مسؤول المستودع',
+      name: 'المهندس كريم عطية',
+      priority_order: 6,
+      relationships: ['المسؤول المباشر عن بشير كرم', 'يملك صلاحية كود تعطيل الكاميرات للصيانة'],
+      knows_facts: [
+        'كان عليه سداد دين شخصي عاجل قبل الحادثة بأيام',
+        'هو من طلب جدولة "صيانة" للكاميرا الخارجية تلك الليلة تحديدًا',
+      ],
+      physical_evidence_held: ['طلب الصيانة الموقّع باسمه', 'إيصال سداد دين مؤرخ بعد الحادثة مباشرة'],
+      motive_category: 'financial',
+      is_real_culprit: true,
+      is_defendant: false,
+    },
+  ],
+  decisive_evidence: ['طلب الصيانة الموقّع باسمه', 'إيصال سداد دين مؤرخ بعد الحادثة مباشرة'],
+  real_culprit_name: 'المهندس كريم عطية',
+  motive: 'كان مسؤول المستودع مدينًا بمبلغ كبير وطلب تعطيلًا مؤقتًا للكاميرا بذريعة الصيانة ليستغل الفرصة بنفسه، مستغلاً معرفته بالكود ونظام المناوبات، وألقى الشبهة على مشرف المناوبة الليلية الذي كان الأسهل اتهامًا لوجوده في الموقع.',
+  correct_verdict: {
+    verdict: 'not_guilty',
+    reasoning:
+      'الأدلة الحاسمة (طلب الصيانة وإيصال سداد الدين) تشير إلى مسؤول المستودع وليس مشرف المناوبة الليلية، الذي لا يملك دافعًا ماليًا موثقًا ولا صلاحية كود تعطيل الكاميرا.',
+  },
+};
