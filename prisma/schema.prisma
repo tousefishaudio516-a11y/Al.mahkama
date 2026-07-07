@@ -3,11 +3,12 @@
 // مطابق لتصميم قاعدة البيانات في وثيقة GDD (القسم 8) + تحديثات
 // نمطي اللعب (القسم play_mode) وعدم افتراض ذنب المتهم (case_pattern_type)
 // ============================================================
-
+ 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
-
+ 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
