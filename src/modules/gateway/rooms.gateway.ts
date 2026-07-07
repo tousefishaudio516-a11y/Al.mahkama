@@ -89,7 +89,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async onJoinRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { roomCode: string; playerId: string },
-  ): Promise<Ack<{ joined: true }>> {
+  ):Promise<Ack<{ joined: true }>> {
     const belongs = await this.assertPlayerBelongsToRoom(data.roomCode, data.playerId);
     if (!belongs) {
       return { ok: false, error: 'لا يمكن الانضمام: هوية لاعب غير صالحة لهذه الغرفة' };
@@ -179,7 +179,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async onEndTrialEarly(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { roomId: string; roomCode: string; judgePlayerId: string },
-  ): Promise<Ack<{ ended: true }>> {
+): Promise<Ack<{ ended: boolean }>> {
     const playerId = await this.getVerifiedPlayerId(client, data.roomCode, data.judgePlayerId);
     if (!playerId) return { ok: false, error: 'لم يتم التحقق من هويتك في هذه الغرفة بعد' };
 
