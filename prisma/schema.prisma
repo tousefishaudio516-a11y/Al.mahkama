@@ -5,10 +5,10 @@
 // ============================================================
  
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  provider = "prisma-client-js"
+ binaryTargets = ["linux-arm64-openssl-1.1.x", "debian-openssl-1.1.x"]
 }
- 
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -34,6 +34,7 @@ enum PlayMode {
   multiplayer
 }
 
+
 enum RoomStatus {
   lobby
   generating
@@ -42,6 +43,8 @@ enum RoomStatus {
   verdict
   reveal
   ended
+
+  @@map("room_status")
 }
 
 // -------------------- الغرف --------------------
