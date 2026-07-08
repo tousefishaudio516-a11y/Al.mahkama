@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai-court-postgres
+    environment:
+      POSTGRES_USER: ai_court_user
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: ai_court_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ai_court_user -d ai_court_dev']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ai-court-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Server سيُشغَّل محليًا عبر `npm run start:dev` بعد تثبيت المتعلقات
+  # (هنا نتركه خارج Docker للتطوير السريع)
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: ai-court-network

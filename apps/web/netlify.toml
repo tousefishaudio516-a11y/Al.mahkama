@@ -1,0 +1,13 @@
+[build]
+  base = "apps/web"
+  command = "npm install && npm run build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# دعم React Router (كل المسارات تُعاد لـ index.html ليتولى الراوتر التوجيه محليًا)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
