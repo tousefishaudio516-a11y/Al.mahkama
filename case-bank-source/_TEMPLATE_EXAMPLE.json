@@ -1,0 +1,170 @@
+{
+  "_ملاحظة": "هذا الملف مثال مرجعي فقط (اسمه يبدأ بـ _ فيُستثنى تلقائيًا من الاستيراد). انسخ هذا الشكل بالضبط لكل قصة من الـ100 قصة، بملف .json منفصل لا يبدأ اسمه بـ _ (مثال: case-001.json).",
+
+  "casePatternType": "defendant_innocent",
+  "_شرح_casePatternType": "واحدة من ثلاث قيم فقط: defendant_guilty (المتهم فعلاً مذنب) | defendant_innocent (المتهم بريء والفاعل شخص آخر) | defendant_partial (مذنب جزئيًا/بظرف مخفف). وزّع الـ100 قصة تقريبًا: نصفها guilty، وثلثها innocent، والباقي partial، لتفادي نمط يمكن للاعبين ملاحظته عبر الجولات.",
+
+  "groundTruth": {
+    "title": "سرقة الصندوق الحديدي في مستودع الميناء",
+    "crime_type": "سرقة موصوفة",
+    "setting": "مستودع شحن تابع لشركة نقل بحري في منطقة الميناء",
+    "victim": {
+      "name": "شركة الأمين للشحن والتخزين",
+      "background": "شركة لوجستية متوسطة الحجم تدير مستودعات تخزين البضائع القيّمة قبل شحنها."
+    },
+    "timeline": [
+      { "time": "22:00", "event": "إغلاق المستودع رسميًا وخروج معظم الموظفين." },
+      { "time": "23:15", "event": "آخر تسجيل لدخول بطاقة عبور إلى المستودع قبل الحادثة." },
+      { "time": "01:40", "event": "كاميرا خارجية تسجل انقطاعًا مفاجئًا لمدة 6 دقائق." },
+      { "time": "06:00", "event": "مسؤول المستودع يكتشف الصندوق الحديدي مفقودًا عند الفتح الصباحي." }
+    ],
+    "_شرح_characters": "يجب أن تحتوي بالضبط على شخصية واحدة لكل من: judge, prosecutor, defense, defendant (ويجب أن تحمل is_defendant=true)، witness_main واحدة على الأقل، وأي عدد من secondary. شخصية واحدة بالضبط يجب أن تحمل is_real_culprit=true (قد تكون نفس المتهم إن كان النمط defendant_guilty، أو شخصية أخرى إن كان innocent/partial). كل الأسماء يجب أن تكون فريدة (لا تكرار).",
+    "characters": [
+      {
+        "role_type": "judge",
+        "role_name": "قاضي التحقيق",
+        "name": "القاضي وائل حمدان",
+        "priority_order": 1,
+        "relationships": ["يدير جلسة التحقيق دون علاقة مسبقة بأي طرف"],
+        "knows_facts": ["التقرير الأولي للشرطة عن وقت الحادثة"],
+        "physical_evidence_held": [],
+        "motive_category": null,
+        "is_real_culprit": false,
+        "is_defendant": false
+      },
+      {
+        "role_type": "prosecutor",
+        "role_name": "ممثل الادعاء",
+        "name": "المحامية ريم صبري",
+        "priority_order": 2,
+        "relationships": ["تمثل شركة الأمين للشحن والتخزين"],
+        "knows_facts": ["سجلات بطاقات الدخول الرسمية", "تقرير الجرد المالي للصندوق المسروق"],
+        "physical_evidence_held": ["نسخة سجل بطاقات الدخول"],
+        "motive_category": "professional",
+        "is_real_culprit": false,
+        "is_defendant": false
+      },
+      {
+        "role_type": "defense",
+        "role_name": "محامي الدفاع",
+        "name": "المحامي عادل فوزي",
+        "priority_order": 3,
+        "relationships": ["يمثل المتهم بشير كرم"],
+        "knows_facts": ["شهادة المتهم بأنه غادر المستودع قبل منتصف الليل"],
+        "physical_evidence_held": [],
+        "motive_category": "professional",
+        "is_real_culprit": false,
+        "is_defendant": false
+      },
+      {
+        "role_type": "defendant",
+        "role_name": "مشرف المناوبة الليلية",
+        "name": "بشير كرم",
+        "priority_order": 4,
+        "relationships": ["كان مسؤولاً عن إغلاق المستودع تلك الليلة", "يعمل تحت إشراف مسؤول المستودع"],
+        "knows_facts": ["كود تعطيل الكاميرا الخارجية المؤقت المستخدم في الصيانة"],
+        "physical_evidence_held": ["جدول مناوبته الموقّع لتلك الليلة"],
+        "motive_category": "financial",
+        "is_real_culprit": false,
+        "is_defendant": true
+      },
+      {
+        "role_type": "witness_main",
+        "role_name": "حارس أمن المدخل",
+        "name": "الحارس منير قاسم",
+        "priority_order": 5,
+        "relationships": ["يعمل في نفس المناوبة الليلية", "رأى شخصًا يغادر عبر المدخل الجانبي"],
+        "knows_facts": ["شاهد شخصًا يحمل حقيبة كبيرة عند الساعة 01:35 تقريبًا"],
+        "physical_evidence_held": ["سجل الحراسة اليدوي لتلك الليلة"],
+        "motive_category": null,
+        "is_real_culprit": false,
+        "is_defendant": false
+      },
+      {
+        "role_type": "secondary",
+        "role_name": "مسؤول المستودع",
+        "name": "المهندس كريم عطية",
+        "priority_order": 6,
+        "relationships": ["المسؤول المباشر عن بشير كرم", "يملك صلاحية كود تعطيل الكاميرات للصيانة"],
+        "knows_facts": [
+          "كان عليه سداد دين شخصي عاجل قبل الحادثة بأيام",
+          "هو من طلب جدولة \"صيانة\" للكاميرا الخارجية تلك الليلة تحديدًا"
+        ],
+        "physical_evidence_held": ["طلب الصيانة الموقّع باسمه", "إيصال سداد دين مؤرخ بعد الحادثة مباشرة"],
+        "motive_category": "financial",
+        "is_real_culprit": true,
+        "is_defendant": false
+      }
+    ],
+    "decisive_evidence": ["طلب الصيانة الموقّع باسمه", "إيصال سداد دين مؤرخ بعد الحادثة مباشرة"],
+    "real_culprit_name": "المهندس كريم عطية",
+    "motive": "كان مسؤول المستودع مدينًا بمبلغ كبير وطلب تعطيلًا مؤقتًا للكاميرا بذريعة الصيانة ليستغل الفرصة بنفسه، مستغلاً معرفته بالكود ونظام المناوبات، وألقى الشبهة على مشرف المناوبة الليلية الذي كان الأسهل اتهامًا لوجوده في الموقع.",
+    "correct_verdict": {
+      "verdict": "not_guilty",
+      "reasoning": "الأدلة الحاسمة (طلب الصيانة وإيصال سداد الدين) تشير إلى مسؤول المستودع وليس مشرف المناوبة الليلية، الذي لا يملك دافعًا ماليًا موثقًا ولا صلاحية كود تعطيل الكاميرا."
+    }
+  },
+
+  "_شرح_dossiers": "مصفوفة بنفس عدد وترتيب characters أعلاه بالضبط (dossiers[0] يخص characters[0] وهكذا). هذا هو 'الملف السري' الذي يقرأه اللاعب صاحب هذه الشخصية فقط.",
+  "dossiers": [
+    {
+      "known_facts": ["التقرير الأولي للشرطة عن وقت الحادثة"],
+      "false_beliefs": [],
+      "missing_facts_hint": [],
+      "held_evidence": [],
+      "lie_or_hide_reason": null,
+      "motive_category": null,
+      "narrative_voice_notes": "رسمي ومحايد، يطرح أسئلة توضيحية فقط."
+    },
+    {
+      "known_facts": ["سجلات بطاقات الدخول الرسمية", "تقرير الجرد المالي للصندوق المسروق"],
+      "false_beliefs": [
+        { "belief": "تعتقد أن بشير كرم هو الفاعل بسبب مسؤوليته عن الإغلاق تلك الليلة", "is_intentional_conflict": true }
+      ],
+      "missing_facts_hint": ["هناك طلب صيانة لم تُراجعه بعد"],
+      "held_evidence": ["نسخة سجل بطاقات الدخول"],
+      "lie_or_hide_reason": null,
+      "motive_category": "professional",
+      "narrative_voice_notes": "حازمة ومباشرة، تبني حجتها على السجلات الرسمية فقط."
+    },
+    {
+      "known_facts": ["شهادة المتهم بأنه غادر المستودع قبل منتصف الليل"],
+      "false_beliefs": [],
+      "missing_facts_hint": ["يشك في مسؤول المستودع لكن بلا دليل قاطع بعد"],
+      "held_evidence": [],
+      "lie_or_hide_reason": null,
+      "motive_category": "professional",
+      "narrative_voice_notes": "دفاعي ومتشكك في رواية الادعاء، يطلب أدلة إضافية دومًا."
+    },
+    {
+      "known_facts": ["كود تعطيل الكاميرا الخارجية المؤقت المستخدم في الصيانة"],
+      "false_beliefs": [],
+      "missing_facts_hint": [],
+      "held_evidence": ["جدول مناوبته الموقّع لتلك الليلة"],
+      "lie_or_hide_reason": "متوتر لأنه يعلم أن الكود استُخدم تلك الليلة لكنه لا يعرف من استخدمه فعليًا",
+      "motive_category": "financial",
+      "narrative_voice_notes": "قلق ومدافع عن نفسه، يكرر أنه لم يغادر مكانه."
+    },
+    {
+      "known_facts": ["شاهد شخصًا يحمل حقيبة كبيرة عند الساعة 01:35 تقريبًا"],
+      "false_beliefs": [],
+      "missing_facts_hint": ["لم يتمكن من رؤية وجه الشخص بوضوح"],
+      "held_evidence": ["سجل الحراسة اليدوي لتلك الليلة"],
+      "lie_or_hide_reason": null,
+      "motive_category": null,
+      "narrative_voice_notes": "متردد وغير واثق من التفاصيل الدقيقة، يعتذر كثيرًا."
+    },
+    {
+      "known_facts": [
+        "كان عليه سداد دين شخصي عاجل قبل الحادثة بأيام",
+        "هو من طلب جدولة صيانة للكاميرا الخارجية تلك الليلة تحديدًا"
+      ],
+      "false_beliefs": [],
+      "missing_facts_hint": [],
+      "held_evidence": ["طلب الصيانة الموقّع باسمه", "إيصال سداد دين مؤرخ بعد الحادثة مباشرة"],
+      "lie_or_hide_reason": "يخفي علاقته بطلب الصيانة وسداد الدين خشية كشف تورطه",
+      "motive_category": "financial",
+      "narrative_voice_notes": "هادئ ومتعاون ظاهريًا، يتجنب تفاصيل الدين والصيانة قدر الإمكان."
+    }
+  ]
+}
