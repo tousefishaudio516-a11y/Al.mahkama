@@ -8,7 +8,7 @@ import type {
   VerdictEnum,
 } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'https://al-mahkama.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL ?? 'https://al-mahkama-server.onrender.com';
 
 class ApiError extends Error {
   constructor(

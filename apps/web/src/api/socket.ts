@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ?? 'https://al-mahkama.onrender.com';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ?? 'https://al-mahkama-server.onrender.com';
 
 let socket: Socket | null = null;
 
