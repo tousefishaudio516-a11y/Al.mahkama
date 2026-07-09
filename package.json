@@ -7,13 +7,12 @@
     "build": "prisma generate && nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:prod": "node dist/src/main.js",
+    "start:prod": "node dist/main.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts",
-    "import:cases": "ts-node prisma/import-case-templates.ts",
-    "postbuild": "mkdir -p dist/src && cp dist/main.js dist/src/main.js 2>/dev/null || true"
+    "import:cases": "ts-node prisma/import-case-templates.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.0",
