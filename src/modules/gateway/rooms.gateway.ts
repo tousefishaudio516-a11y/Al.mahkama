@@ -102,46 +102,50 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('mark_ready')
-  async onMarkReady(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { roomCode: string; playerId: string },
-  ): Promise<Ack<{ readyCount: number; totalCount: number; allReady: boolean }>> {
-    const playerId = await this.getVerifiedPlayerId(client, data.roomCode, data.playerId);
-    if (!playerId) return { ok: false, error: 'لم يتم التحقق من هويتك في هذه الغرفة بعد' };
+async onMarkReady(
+  @ConnectedSocket() client: Socket,
+  @MessageBody() data: { roomCode: string; playerId: string },
+): Promise<Ack<{ readyCount: number; totalCount: number; allReady: boolean }>> {
+  const playerId = await this.getVerifiedPlayerId(client, data.roomCode, data.playerId);
+  if (!playerId) return { ok: false, error: 'لم يتم التحقق من هويتك في هذه الغرفة بعد' };
 
-    try {
-      const result = await this.readingService.markReady(data.roomCode, playerId);
-      this.server.to(data.roomCode).emit('ready_update', result);
-      if (result.allReady) {
-        this.server.to(data.roomCode).emit('trial_started', { durationSeconds: 1200 });
-      }
-      return { ok: true, data: result };
-    } catch (err) {
-      return { ok: false, error: this.errMsg(err) };
+  try {
+    const result = await this.readingService.markReady(data.roomCode, playerId);
+    this.server.to(data.roomCode).emit('ready_update', result);
+
+    if (result.allReady) {
+      this.server.to(data.roomCode).emit('trial_started', { durationSeconds: 1200 });
     }
-  }
 
-  @SubscribeMessage('close_file')
-  async onCloseFile(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { roomCode: string },
-  ): Promise<Ack<{ finished: boolean; nextPlayerId: string | null }>> {
-    try {
-      const result = await this.readingService.closeFileAndAdvance(data.roomCode);
-      if (result.finished) {
-        this.server.to(data.roomCode).emit('trial_started', { durationSeconds: 1200 });
-      } else {
-        this.server.to(data.roomCode).emit('advance_to_next_local_player', {
-          nextPlayerId: result.nextPlayerId,
-        });
-      }
-      return { ok: true, data: result };
-    } catch (err) {
-      return { ok: false, error: this.errMsg(err) };
+    return { ok: true, data: result };
+  } catch (err) {
+    return { ok: false, error: this.errMsg(err) };
+  }
+}
+
+@SubscribeMessage('close_file')
+async onCloseFile(
+  @ConnectedSocket() client: Socket,
+  @MessageBody() data: { roomCode: string },
+): Promise<Ack<{ finished: boolean; nextPlayerId: string | null }>> {
+  try {
+    const result = await this.readingService.closeFileAndAdvance(data.roomCode);
+
+    if (result.finished) {
+      this.server.to(data.roomCode).emit('trial_started', { durationSeconds: 1200 });
+    } else {
+      this.server.to(data.roomCode).emit('advance_to_next_local_player', {
+        nextPlayerId: result.nextPlayerId,
+      });
     }
-  }
 
-  @SubscribeMessage('trial_event')
+    return { ok: true, data: result };
+  } catch (err) {
+    return { ok: false, error: this.errMsg(err) };
+  }
+}
+
+@SubscribeMessage('trial_event')
   async onTrialEvent(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { roomId: string; roomCode: string; event: any },
@@ -179,14 +183,14 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async onEndTrialEarly(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { roomId: string; roomCode: string; judgePlayerId: string },
-): Promise<Ack<{ ended: boolean }>> {
+): Promise<Ack<{ ended:true  }>> {
     const playerId = await this.getVerifiedPlayerId(client, data.roomCode, data.judgePlayerId);
     if (!playerId) return { ok: false, error: 'لم يتم التحقق من هويتك في هذه الغرفة بعد' };
 
     try {
       const result = await this.trialService.endTrialEarly(data.roomId, playerId);
       this.server.to(data.roomCode).emit('trial_ended', { reason: 'judge' });
-      return { ok: true, data: result };
+      return { ok: true, data: { ended: true } };
     } catch (err) {
       return { ok: false, error: this.errMsg(err) };
     }

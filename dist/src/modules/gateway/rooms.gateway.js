@@ -76,7 +76,7 @@ let RoomsGateway = RoomsGateway_1 = class RoomsGateway {
             if (result.allReady) {
                 this.server.to(data.roomCode).emit('trial_started', { durationSeconds: 1200 });
             }
-            return { ok: true, data: result };
+            return { ok: true, data: { ended: true } };
         }
         catch (err) {
             return { ok: false, error: this.errMsg(err) };
@@ -93,7 +93,7 @@ let RoomsGateway = RoomsGateway_1 = class RoomsGateway {
                     nextPlayerId: result.nextPlayerId,
                 });
             }
-            return { ok: true, data: result };
+            return { ok: true, data: { ended: true } };
         }
         catch (err) {
             return { ok: false, error: this.errMsg(err) };
@@ -132,7 +132,7 @@ let RoomsGateway = RoomsGateway_1 = class RoomsGateway {
         try {
             const result = await this.trialService.endTrialEarly(data.roomId, playerId);
             this.server.to(data.roomCode).emit('trial_ended', { reason: 'judge' });
-            return { ok: true, data: result };
+            return { ok: true, data: { ended: true } };
         }
         catch (err) {
             return { ok: false, error: this.errMsg(err) };
