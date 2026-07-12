@@ -33,7 +33,7 @@ export function Home() {
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: hostPlayer.id, displayName: displayName.trim() });
       navigate(`/room/${room.code}/lobby`);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'تعذّر إنشاء الغرفة');
+      console.error(err); setError(err instanceof ApiError ? err.message : String(err));
     } finally {
       setLoading(false);
     }
