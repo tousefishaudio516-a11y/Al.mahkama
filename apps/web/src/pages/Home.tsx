@@ -31,7 +31,7 @@ export function Home() {
       const hostPlayer = room.players?.[0];
       if (!hostPlayer) throw new Error('تعذّر تحديد هوية المضيف بعد إنشاء الغرفة');
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: hostPlayer.id, displayName: displayName.trim() });
-      navigate(`/room/${room.code}/lobby`);
+      window.location.href =(`/room/${room.code}/lobby`);
     } catch (err) {
       console.error(err); setError(err instanceof ApiError ? err.message : String(err));
     } finally {
