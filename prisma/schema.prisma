@@ -17,11 +17,11 @@ datasource db {
 // -------------------- المستخدمون --------------------
 model User {
   id           String   @id @default(uuid())
-  displayName  String
-  avatarUrl    String?
-  isGuest      Boolean  @default(true)
-  totalPoints  Int      @default(0)
-  createdAt    DateTime @default(now())
+  displayName  String   @map("display_name")
+  avatarUrl    String?  @map("avatar_url")
+  isGuest      Boolean  @default(true) @map("is_guest")
+  totalPoints  Int      @default(0) @map("total_points")
+  createdAt    DateTime @default(now()) @map("created_at")
 
   hostedRooms  Room[]        @relation("HostedRooms")
   roomPlayers  RoomPlayer[]
