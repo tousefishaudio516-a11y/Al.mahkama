@@ -54,7 +54,7 @@ export function Home() {
       if (!firstPlayer) throw new Error('تعذّر إنشاء اللاعبين المحليين');
       // في وضع الهاتف الواحد: الجهاز نفسه "يمثّل" أول لاعب فقط لأغراض تحديد الهوية التقنية
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: firstPlayer.id, displayName: names[0] });
-      navigate(`/room/${room.code}/lobby`);
+      window.location.href = `/room/${room.code}/lobby`;
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'تعذّر إنشاء الغرفة');
     } finally {
@@ -73,7 +73,7 @@ export function Home() {
         displayName: displayName.trim(),
       });
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: player.id, displayName: displayName.trim() });
-      navigate(`/room/${room.code}/lobby`);
+      window.location.href = `/room/${room.code}/lobby`;
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'تعذّر الانضمام للغرفة');
     } finally {
