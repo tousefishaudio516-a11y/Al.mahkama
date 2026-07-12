@@ -27,7 +27,7 @@ export function Home() {
     setLoading(true);
     setError(null);
     try {
-      const room = await api.createRoom({ playMode: 'multiplayer', hostDisplayName: displayName.trim() });
+      const room = await api.createRoom({ playMode: 'multiplayer', hostDisplayName: displayName.trim() }); console.log('ROOM RESPONSE', room);
       const hostPlayer = room.players?.find((p) => p.userId === room.hostUserId);
       if (!hostPlayer) throw new Error('تعذّر تحديد هوية المضيف بعد إنشاء الغرفة');
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: hostPlayer.id, displayName: displayName.trim() });
