@@ -31,7 +31,7 @@ export function Home() {
       console.log('FULL ROOM', JSON.stringify(room)); const hostPlayer = room.players?.[0];
       if (!hostPlayer) throw new Error('تعذّر تحديد هوية المضيف بعد إنشاء الغرفة');
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: hostPlayer.id, displayName: displayName.trim() });
-      window.location.href =(`/room/${room.code}/lobby`);
+      navigate(`/room/${room.code}/lobby`);
     } catch (err) {
       console.error(err); setError(err instanceof ApiError ? err.message : String(err));
     } finally {
@@ -54,7 +54,7 @@ export function Home() {
       if (!firstPlayer) throw new Error('تعذّر إنشاء اللاعبين المحليين');
       // في وضع الهاتف الواحد: الجهاز نفسه "يمثّل" أول لاعب فقط لأغراض تحديد الهوية التقنية
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: firstPlayer.id, displayName: names[0] });
-      window.location.href = `/room/${room.code}/lobby`;
+      navigate(`/room/${room.code}/lobby`);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'تعذّر إنشاء الغرفة');
     } finally {
@@ -73,7 +73,7 @@ export function Home() {
         displayName: displayName.trim(),
       });
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: player.id, displayName: displayName.trim() });
-      window.location.href = `/room/${room.code}/lobby`;
+      navigate(`/room/${room.code}/lobby`);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'تعذّر الانضمام للغرفة');
     } finally {
