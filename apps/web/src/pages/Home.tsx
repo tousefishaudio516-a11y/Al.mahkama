@@ -28,7 +28,7 @@ export function Home() {
     setError(null);
     try {
       const room = await api.createRoom({ playMode: 'multiplayer', hostDisplayName: displayName.trim() }); console.log('ROOM RESPONSE', room);
-      const hostPlayer = room.players?.[0];
+      console.log('FULL ROOM', JSON.stringify(room)); const hostPlayer = room.players?.[0];
       if (!hostPlayer) throw new Error('تعذّر تحديد هوية المضيف بعد إنشاء الغرفة');
       setIdentity({ roomCode: room.code, roomId: room.id, playerId: hostPlayer.id, displayName: displayName.trim() });
       window.location.href =(`/room/${room.code}/lobby`);
