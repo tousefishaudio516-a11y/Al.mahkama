@@ -7,6 +7,12 @@ import { RoleBadge } from '../components/RoleBadge';
 import { EvidenceList } from '../components/EvidenceList';
 import type { MyCharacterResponse, Room } from '../types';
 
+/**
+ * شاشة الملف السري (شاشة 5) — إعادة تصميم بصري بالكامل فقط. لا تغيير في أي منطق:
+ * نفس استدعاءات API/Socket (getMyCharacter, mark_ready, getCurrentTurn, closeFile)،
+ * ونفس آلية إخفاء بيانات اللاعب السابق عند تبديل الدور في وضع الهاتف الواحد
+ * (إعادة تصفير data/revealed في useEffect عند تغيّر currentPlayerId — كانت موجودة أصلاً).
+ */
 export function Reading() {
   const { roomCode = '' } = useParams();
   const navigate = useNavigate();
@@ -46,41 +52,47 @@ function DossierView({ data }: { data: MyCharacterResponse }) {
   const dossier = character.dossier;
 
   return (
-    <div className="dossier-card">
-      <div className="dossier-card__stamp">سرّي</div>
-      <div style={{ marginTop: 10, marginBottom: 10 }}>
+    <div className="file-card">
+      <div className="seal">سرّي<br />للغاية</div>
+      <div className="file-card__lens">🔍</div>
+      <div style={{ marginTop: 34, marginBottom: 10 }}>
         <RoleBadge roleType={character.roleType} roleName={character.roleName} />
       </div>
-      <h3 style={{ marginTop: 0 }}>ما تعرفه</h3>
-      <ul>
-        {dossier.known_facts.map((f, i) => (
-          <li key={i}>{f}</li>
-        ))}
-      </ul>
+
+      <div className="file-card__section">
+        <h3>ما تعرفه</h3>
+        <ul>
+          {dossier.known_facts.map((f, i) => (
+            <li key={i}>{f}</li>
+          ))}
+        </ul>
+      </div>
 
       {dossier.false_beliefs.length > 0 && (
-        <>
+        <div className="file-card__section">
           <h3>ما تعتقده (قد لا يكون صحيحًا بالكامل)</h3>
           <ul>
             {dossier.false_beliefs.map((b, i) => (
               <li key={i}>{b.belief}</li>
             ))}
           </ul>
-        </>
+        </div>
       )}
 
       {dossier.lie_or_hide_reason && (
-        <>
+        <div className="file-card__section">
           <h3>ما تفضّل إخفاءه</h3>
           <p>{dossier.lie_or_hide_reason}</p>
-        </>
+        </div>
       )}
 
-      <h3>الأدلة التي تحملها</h3>
-      <EvidenceList evidences={evidences} canReveal={false} />
+      <div className="file-card__section">
+        <h3>الأدلة التي تحملها</h3>
+        <EvidenceList evidences={evidences} canReveal={false} />
+      </div>
 
-      <p className="center-note" style={{ marginTop: 16 }}>
-        احتفظ بهذه المعلومات لنفسك — ستُستخدم الأدلة لاحقًا أثناء المحاكمة فقط.
+      <p className="center-note" style={{ marginTop: 10 }}>
+        🤫 احتفظ بهذه المعلومات لنفسك — ستُستخدم الأدلة لاحقًا أثناء المحاكمة فقط.
       </p>
     </div>
   );
@@ -139,22 +151,21 @@ function MultiplayerReading({
   }
 
   return (
-    <div className="screen">
-      <div className="brand">
-        <div className="brand__seal">ع</div>
-        <h1 className="brand__title">ملفك السري</h1>
+    <div className="screen secret-screen">
+      <div className="court-brand">
+        <div className="secret-screen__stamp">ملف سري</div>
       </div>
       {error && <div className="error-banner">{error}</div>}
-      {data ? <DossierView data={data} /> : <p className="center-note">...جارٍ التحميل</p>}
+      {data ? <DossierView data={data} /> : <p className="center-note">...جارٍ فك ختم الملف</p>}
 
       <div className="spacer-lg" />
       {!ready ? (
-        <button className="btn btn--primary" onClick={handleReady}>
-          انتهيت من القراءة — أنا جاهز
+        <button className="stamp-btn stamp-btn--gold" onClick={handleReady}>
+          ✅ انتهيت من القراءة — أنا جاهز
         </button>
       ) : (
         <p className="center-note">
-          بانتظار بقية اللاعبين ({readyCount.readyCount}/{readyCount.totalCount})...
+          بانتظار بقية المحققين ({readyCount.readyCount}/{readyCount.totalCount})...
         </p>
       )}
     </div>
@@ -194,6 +205,8 @@ function SingleDeviceReading({ roomCode, onTrialStart }: { roomCode: string; onT
   }, [roomCode, onTrialStart]);
 
   useEffect(() => {
+    // هذا الشرط هو ما يضمن إخفاء بيانات اللاعب السابق فوراً عند تبديل الدور —
+    // موجود أصلاً في المنطق السابق، لم يتغيّر هنا إطلاقاً.
     if (!currentPlayerId || lastLoadedFor.current === currentPlayerId) return;
     lastLoadedFor.current = currentPlayerId;
     setRevealed(false);
@@ -219,27 +232,26 @@ function SingleDeviceReading({ roomCode, onTrialStart }: { roomCode: string; onT
   }
 
   return (
-    <div className="screen">
-      <div className="brand">
-        <div className="brand__seal">ع</div>
-        <h1 className="brand__title">مرّر الهاتف الآن</h1>
+    <div className="screen secret-screen">
+      <div className="court-brand">
+        <h1 className="court-brand__title">📱 مرّر الهاتف الآن</h1>
       </div>
       {error && <div className="error-banner">{error}</div>}
 
       {!revealed ? (
-        <div className="panel" style={{ textAlign: 'center' }}>
-          <p>سلّم الهاتف للاعب التالي في الدور، ثم اضغط للكشف عن ملفك.</p>
+        <div className="wood-panel" style={{ textAlign: 'center' }}>
+          <p>سلّم الهاتف للمحقق التالي في الدور، ثم اضغط للكشف عن ملفك أنت فقط.</p>
           <div className="spacer-lg" />
-          <button className="btn btn--primary" onClick={() => setRevealed(true)}>
-            هذا هاتفي، اعرض ملفي
+          <button className="stamp-btn stamp-btn--gold" onClick={() => setRevealed(true)}>
+            🔓 هذا هاتفي، اعرض ملفي
           </button>
         </div>
       ) : data ? (
         <>
           <DossierView data={data} />
           <div className="spacer-lg" />
-          <button className="btn btn--danger" onClick={handleCloseFile}>
-            أغلقت الملف — التالي
+          <button className="stamp-btn stamp-btn--wax" onClick={handleCloseFile}>
+            🔒 إخفاء الملف وتسليم الهاتف
           </button>
         </>
       ) : (
