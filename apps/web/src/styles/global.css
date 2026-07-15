@@ -401,3 +401,73 @@ h3,
 .spacer-lg {
   height: 20px;
 }
+
+.court-brand {
+  text-align: center;
+  margin: 30px auto 35px;
+}
+
+.court-brand__scales {
+  font-size: 80px;
+  line-height: 1;
+  color: var(--brass-500);
+  text-shadow: 0 4px 10px rgba(0,0,0,.5);
+}
+
+.court-brand__title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--parchment-100);
+  margin: 15px 0 5px;
+}
+
+.court-brand__subtitle {
+  color: var(--brass-300);
+  font-size: 18px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stamp-btn {
+  width: 100%;
+  padding: 18px;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  cursor: pointer;
+  border: 2px solid var(--brass-500);
+  box-shadow: var(--shadow-card);
+}
+
+.stamp-btn--gold {
+  background: var(--brass-600);
+  color: var(--parchment-100);
+}
+
+.stamp-btn--wood {
+  background: #4a2d18;
+  color: var(--parchment-100);
+}
+
+.stamp-btn--outline {
+  background: transparent;
+  color: var(--brass-300);
+}
+
+
+body {
+  background:
+    linear-gradient(rgba(20, 12, 5, 0.65), rgba(20, 12, 5, 0.75)),
+    repeating-linear-gradient(
+      90deg,
+      #3b2413 0px,
+      #5a3518 8px,
+      #3b2413 16px
+    );
+  background-attachment: fixed;
+}
+

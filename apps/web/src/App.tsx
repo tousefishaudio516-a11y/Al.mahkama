@@ -6,6 +6,7 @@ import { Reading } from './pages/Reading';
 import { Trial } from './pages/Trial';
 import { Verdict } from './pages/Verdict';
 import { Reveal } from './pages/Reveal';
+import { CaseFile } from './pages/CaseFile';
 
 export function App() {
   return (
@@ -19,6 +20,7 @@ export function App() {
           <Route path="/room/:roomCode/trial" element={<Trial />} />
           <Route path="/room/:roomCode/verdict" element={<Verdict />} />
           <Route path="/room/:roomCode/reveal" element={<Reveal />} />
+          <Route path="/room/:roomCode/case" element={<CaseFile />} />
         </Routes>
       </BrowserRouter>
     </IdentityProvider>
